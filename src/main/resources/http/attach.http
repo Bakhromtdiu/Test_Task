@@ -1,0 +1,10 @@
+POST http://localhost:8080/attach/upload
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="friend.jpg"
+### file path
+/Users/baxromergashev/Desktop/friend.jpg
+
+### open url attach
+GET http://localhost:8080/attach/open/309b1a88-5128-4f3c-9f61-d94e301f4aa5.jpg

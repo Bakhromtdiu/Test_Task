@@ -1,0 +1,27 @@
+POST http://localhost:8080/message/add
+Content-Type: application/json
+
+{ "chatId": "1",
+  "authorId": "2",
+  "type": "TEXT",
+  "content": "I am find "
+  }
+
+####
+POST http://localhost:8080/message/add
+Content-Type: application/json
+
+
+{ "chatId": "1",
+  "authorId": "1",
+  "type": "IMAGE",
+  "content": "817dc6bd-d959-4a50-90c1-58fdf3562c8a"
+}
+###
+POST http://localhost:8080/message/get
+Content-Type: application/json
+
+
+{
+  "chatId": "1"
+}
