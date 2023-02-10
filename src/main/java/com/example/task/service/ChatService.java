@@ -7,6 +7,7 @@ import com.example.task.exception.BadRequestException;
 import com.example.task.exception.NotFoundException;
 import com.example.task.repository.ChatRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,6 +19,8 @@ public class ChatService {
 
     private final UserService userService;
 
+    public static final String chatHash = "chatHash";
+    private final RedisTemplate<String, Object> template;
     private final ChatRepository chatRepository;
 
     public ChatDTO save(ChatDTO dto) {
@@ -36,6 +39,7 @@ public class ChatService {
                 .toList();
         chat.setUsers(users);
         Chat save = chatRepository.save(chat);
+        template.opsForHash().put(chatHash, chat.getId(), chat);
         dto.setId(save.getId());
         return dto;
     }

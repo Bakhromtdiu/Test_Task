@@ -10,6 +10,7 @@ import com.example.task.enums.MessageType;
 import com.example.task.exception.AccessDeniedException;
 import com.example.task.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,8 +20,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MessageService {
     private final MessageRepository repository;
+    public static final String messageHash = "messageHash";
     private final ChatService chatService;
     private final UserService userService;
+
+    private final RedisTemplate<String, Object> template;
 
     private final AttachService attachService;
 
@@ -48,6 +52,7 @@ public class MessageService {
         }
         message.setCreatedAt(LocalDateTime.now());
         Message save = repository.save(message);
+        template.opsForHash().put(messageHash, message.getId(), message);
         return save.getId();
     }
 
@@ -56,10 +61,10 @@ public class MessageService {
 
         List<Message> allByChat_id = repository
                 .findAllByChat_idOrderByCreatedAtDesc(chatId);
-        return allByChat_id.stream().map(m->toDto(m,chat)).toList();
+        return allByChat_id.stream().map(m -> toDto(m, chat)).toList();
     }
 
-    public MessageResDTO toDto(Message message,Chat chat) {
+    public MessageResDTO toDto(Message message, Chat chat) {
         MessageResDTO messageDTO = new MessageResDTO();
         if (message.getContentType().equals(MessageType.IMAGE)) {
             Attach image = attachService.getById(message.getContent());
