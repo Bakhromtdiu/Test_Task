@@ -5,10 +5,12 @@ import com.example.task.entity.attach.Attach;
 import com.example.task.exception.NotFoundException;
 import com.example.task.repository.AttachRepository;
 import com.sun.tools.attach.AttachOperationFailedException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,13 +22,15 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class AttachService {
+    public static final String chatHash = "attachHash";
+    private final RedisTemplate<String, Object> template;
+    private final AttachRepository attachRepository;
     @Value("${attach.upload.folder}")
     public String attachFolder;
     @Value("${attach.open.url}")
     public String attachOpenUrl;
-    @Autowired
-    AttachRepository attachRepository;
 
     public AttachDTO saveToSystem(MultipartFile file) {
         try {
@@ -56,6 +60,7 @@ public class AttachService {
             entity.setId(uuid);
             attachRepository.save(entity);
 
+
             AttachDTO attachDTO = new AttachDTO();
             attachDTO.setId(entity.getId());
             attachDTO.setOriginalName(file.getOriginalFilename());
@@ -80,7 +85,7 @@ public class AttachService {
 
             Attach attach = byId.get();
 
-            Path file = Paths.get(attachFolder +attach.getPath()+"/"+ fileName);
+            Path file = Paths.get(attachFolder + attach.getPath() + "/" + fileName);
             data = Files.readAllBytes(file);
 
             return data;
@@ -91,11 +96,12 @@ public class AttachService {
         return new byte[0];
     }
 
-    public Attach getById(final String id){
-        return attachRepository.findById(id).orElseThrow(()->{
-           throw new NotFoundException("Attach not found!");
+    public Attach getById(final String id) {
+        return attachRepository.findById(id).orElseThrow(() -> {
+            throw new NotFoundException("Attach not found!");
         });
     }
+
     public String getYmDString() {
         int year = Calendar.getInstance().get(Calendar.YEAR);
         int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
