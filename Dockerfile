@@ -1,3 +1,4 @@
+FROM openjdk:17-jdk-slim-buster
 
 ARG JAR_FILE=target/test-chat.jar
 
