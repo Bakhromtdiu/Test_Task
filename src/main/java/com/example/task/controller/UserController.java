@@ -17,8 +17,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/add")
-    public HttpEntity<Integer> create(@RequestBody UserDTO dto) {
-        return ResponseEntity.ok(userService.save(dto));
+    public ResponseEntity<String> create(@RequestBody UserDTO dto) {
+        return ResponseEntity.ok(userService.save(dto).toString());
     }
 
 }

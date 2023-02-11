@@ -1,7 +1,4 @@
 FROM openjdk:17-jdk-slim-buster
+ADD target/test-chat.jar test-chat.jar
 
-ARG JAR_FILE=target/test-chat.jar
-
-COPY ${JAR_FILE} test-chat.jar
-
-ENTRYPOINT ["java","-jar","test-chat.jar"]
+CMD ["java","-jar","test-chat.jar"]
