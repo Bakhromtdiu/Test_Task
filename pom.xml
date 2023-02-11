@@ -62,6 +62,8 @@
                 </configuration>
             </plugin>
         </plugins>
+    <finalName>test-chat</finalName>
     </build>
+
 
 </project>
